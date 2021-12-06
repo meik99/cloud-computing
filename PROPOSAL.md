@@ -1,90 +1,63 @@
-# Proposal - Video Streaming Platform
+# Proposal - CI / CD Pipeline
 
-The idea is to create a web platform for video streaming and sharing.
-Like YouTube, it should be possible to upload and then view videos.
-These videos can then be shared with other people or be set to public.
+The idea is to first create a simple demo program.
+It does not really matter what the program is, e.g., it could be a simple calculator, as long as it has unit tests.
+The repository is hosted on GitHub.
 
-## Potential Data and Services
+Then [Concourse](https://github.com/concourse/concourse-docker) is deployed on a cluster.
+Concourse is a CI/CD system which allows creating pipelines consisting of jobs, where each job runs in its own container.
 
-* Metadata for Videos
-  * Id
-  * Title
-  * Description
-  * Tags
-  * Storage path
-* Access of Videos
-  * Owner
-  * Shared With
-  * Is Public
-* Videos
-  * Handles streaming of a video
-* User
-  * Id
-  * Name
-* Profile for a User
-  * Owner
-  * Description
-* Rating of Videos
-  * Likes
-  * Dislikes
-  * Video Id
-* Comments
-  * User Id
-  * Text
-  * Replies
+A pipeline than runs the unit tests whenever a push to the main branch occurs.
+If the unit tests run through, it is built and published.
+Depending on the demo app, as artifact to GitHub or as Docker image to DockerHub.
 
-## Data Storage
+If it is deployable, i.e. the demo app is a service or webapp, it is then also deployed on the cluster.
+Likely in a different namespace.
 
-A MongoDB instance could be used to store the metadata, since it is already made to be distributable. 
-The videos themselves should be stored as file, accessed by a custom service. 
-Alternatively to a custom service, research could be done to find already existing solutions.
+As an extension, an [operator](https://sdk.operatorframework.io/) can then be built, which checks the image hashes of the demo app.
+If the hashes of the currently running container the one on DockerHub differ, it recreates the pod, updating the application.
 
-## [Operator](https://sdk.operatorframework.io/)
+## Areas of concern
 
-If time allows, an operator could also be written and deployed. 
-This operator can make sure, that the services, i.e. as pods, run correctly or automatically deploy them as needed.
-It would make sure the infrastructure is set up in a correct way, or report any errors if not.
+* Demo Application
+* Concourse Deployment
+* Concourse Pipeline
+  * Listen to repository changes
+  * Unit test
+  * Build
+  * Delivery
+* Operator
 
 ## Responsibilities
 
-From the above services, the following responsibilities are assigned.
+From the above areas, the following responsibilities are assigned.
 
 [Daniel Klösler](https://github.com/Ethlaron):
-* Video Metadata Service
-* Video Access Service (Authorization)
+* Demo Application
+* Listen to repository changes
+* Run unit test
 
 [Christoph Pargfrieder](https://github.com/ChristophPargfrieder):
-* Comments Service
-* Rating Service
-* Video Service
+
+* Run build
+* Automate Delivery
 
 [Michael Rynkiewicz](https://github.com/meik99): 
-* Frontend
-* User Service (Authentication)
-* Profile Service
+* Concourse Deployment
 * Operator
 
 ## Milestones
 
-The following milestones are defined as use-case scenarios.
+The following milestones can be defined for this project.
 
 ### Milestone 1
 
-It is possible to authenticate a Google account against the Google OAuth 2 endpoint and show their name on the frontend.
-Authentication is optional, i.e. the frontend does not try to authenticate automatically.
-Only the landing page can be viewed unauthenticated.
-An authenticated user can view, edit and delete their own profile.
+Concourse is deployed on a cluster and is reachable either from port forwarding or the web.
 
 ### Milestone 2
 
-Videos can be uploaded and viewed.
-The frontend provides a workflow to correctly upload a video file and user defined metadata.
-A viewing showing a profile lists uploaded videos.
-From there it is possible to watch a video and view its metadata.
+A concourse pipeline handles testing, building and delivering the demo application.
 
 ### Milestone 3
 
-Videos can be viewed and commented by users other than the original poster.
-Access rights for a video can be defined by the poster.
-Those access rights may be, for example, public, restricted and private.
-Additionally, videos can be rated and searched for.
+An operator deploys and updates the demo application as necessary.
