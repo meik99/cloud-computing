@@ -61,3 +61,10 @@ A concourse pipeline handles testing, building and delivering the demo applicati
 ### Milestone 3
 
 An operator deploys and updates the demo application as necessary.
+
+## Goal
+
+The goal of this project is to show, how cloud based system can speed up the development process.
+By automatically testing, building and deliverying, an application can be shipped with every major code change.
+By using a cloud based solution to do so, the environment to test, build and deliver stays consistent.
+Finally, by leveraging cloud technologies, such as an operator, deployed solutions can automatically be updated, without the need for human interventions.
