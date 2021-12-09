@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: concourse-web
+  namespace: concourse
+spec:
+  selector:
+    matchLabels:
+      app: concourse
+      type: web
+  serviceName: concourse-web
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: concourse
+        type: web
+    spec:
+      containers:
+      - name: concourse-web
+        image: concourse/concourse
+        args:
+          - web
+        ports:
+        - containerPort: 8080
+          name: app
+        - containerPort: 2222
+          name: worker
+        envFrom:
+          - secretRef:
+              name: concourse-envvars
+        volumeMounts:
+          - mountPath: /etc/keys
+            name: concourse-keys
+      volumes:
+        - name: concourse-keys
+          secret:
+              secretName: concourse-keys
+
+        

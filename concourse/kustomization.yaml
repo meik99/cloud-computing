@@ -1,0 +1,7 @@
+resources:
+  - envvars.yaml
+  - keys.yaml
+  - service-web.yaml
+  - statefulset-web.yaml
+  - service-worker.yaml
+  - statefulset-worker.yaml

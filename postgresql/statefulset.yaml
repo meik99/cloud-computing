@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: concourse
+spec:
+  selector:
+    matchLabels:
+      app: concourse
+      type: db
+  serviceName: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: concourse
+        type: db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:14
+        envFrom:
+          - secretRef:
+              name: postgres
+        ports:
+        - containerPort: 5432
+          name: database
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      namespace: concourse
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 5Gi
