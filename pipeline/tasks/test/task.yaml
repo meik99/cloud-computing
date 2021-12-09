@@ -6,7 +6,7 @@ image_resource:
 
 
 inputs:
-  - repository
+  - name: repository
 
 run:
   path: repository/pipeline/task/test/task.sh

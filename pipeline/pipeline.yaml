@@ -12,4 +12,4 @@ jobs:
       - get: repository
         trigger: false
       - task: test
-        file: repository/pipeline/tasks/test/test.yaml
+        file: repository/pipeline/tasks/test/task.yaml
