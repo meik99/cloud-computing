@@ -10,4 +10,4 @@ inputs:
   - name: repository
 
 run:
-  path: repository/pipeline/task/test/task.sh
+  path: repository/pipeline/tasks/test/task.sh
