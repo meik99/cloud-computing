@@ -2,7 +2,8 @@ platform: linux
 image_resource: 
   type: registry-image
   source: 
-    repository: ubuntu:latest
+    repository: ubuntu
+    tag: latest
 
 
 inputs:
