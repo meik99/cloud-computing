@@ -11,6 +11,9 @@ npm install
 echo "Installing Angular CLI"
 npm install -g @angular/cli
 
+echo "Installing Chromium"
+apt-get install chromium
+
 echo "Running Angular tests"
 ng test --watch=false --browsers=ChromeHeadless
 
