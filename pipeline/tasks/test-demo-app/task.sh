@@ -12,6 +12,7 @@ echo "Installing Angular CLI"
 npm install -g @angular/cli
 
 echo "Installing Chromium"
+apt-get update
 apt-get install chromium
 
 echo "Running Angular tests"
