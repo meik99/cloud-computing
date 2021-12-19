@@ -18,5 +18,5 @@ export CHROME_BIN="$(which chromium)"
 
 
 echo "Running Angular tests"
-ng test --watch=false --browsers=ChromeHeadless
+ng test --watch=false --browsers=Headless_Chrome
 
