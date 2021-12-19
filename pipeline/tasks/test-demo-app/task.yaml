@@ -2,7 +2,7 @@ platform: linux
 image_resource: 
   type: registry-image
   source: 
-    repository: ubuntu
+    repository: node
     tag: latest
 
 
@@ -10,4 +10,4 @@ inputs:
   - name: repository
 
 run:
-  path: repository/pipeline/tasks/test/task.sh
+  path: repository/pipeline/tasks/test-demo-app/task.sh
