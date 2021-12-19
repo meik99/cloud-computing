@@ -1,0 +1,15 @@
+resources:
+  - icon: github
+    name: repository
+    source:
+      uri: https://github.com/meik99/cloud-computing.git
+      branch: concourse-deployment
+    type: git
+
+jobs:
+  - name: test
+    plan:
+      - get: repository
+        trigger: false
+      - task: test
+        file: repository/pipeline/tasks/test/task.yaml

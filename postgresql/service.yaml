@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: concourse
+spec:
+  selector:
+    app: concourse
+    type: db
+  type: ClusterIP
+  ports:
+  - port: 5432
