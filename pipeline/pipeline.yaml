@@ -3,13 +3,13 @@ resources:
     name: repository
     source:
       uri: https://github.com/meik99/cloud-computing.git
-      branch: concourse-deployment
+      branch: test-pipeline
     type: git
 
 jobs:
-  - name: test
+  - name: test-demo-app
     plan:
       - get: repository
-        trigger: false
+        trigger: true
       - task: test
-        file: repository/pipeline/tasks/test/task.yaml
+        file: repository/pipeline/tasks/test-demo-app/task.yaml
