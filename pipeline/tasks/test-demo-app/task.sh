@@ -12,5 +12,5 @@ echo "Installing Angular CLI"
 npm install -g @angular/cli
 
 echo "Running Angular tests"
-ng test --watch=false --browser=ChromeHeadless
+ng test --watch=false --browsers=ChromeHeadless
 

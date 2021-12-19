@@ -10,6 +10,6 @@ jobs:
   - name: test-demo-app
     plan:
       - get: repository
-        trigger: false
+        trigger: true
       - task: test
         file: repository/pipeline/tasks/test-demo-app/task.yaml
