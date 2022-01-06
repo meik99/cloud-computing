@@ -3,8 +3,17 @@ resources:
     name: repository
     source:
       uri: https://github.com/meik99/cloud-computing.git
-      branch: test-pipeline
+      branch: main
     type: git
+
+  - name: demo-app
+    type: registry-image
+    icon: docker
+    source:
+      repository: meik99/cloud-computing
+      username: ((dockerhub.username))
+      password: ((dockerhub.token))
+      tag: dev
 
 jobs:
   - name: test-demo-app
@@ -13,3 +22,16 @@ jobs:
         trigger: true
       - task: test
         file: repository/pipeline/tasks/test-demo-app/task.yaml
+
+  - name: build-and-push
+    plan:
+      - get: repository
+        passed: 
+          - test-demo-app
+        trigger: true
+      - task: build
+        privileged: true
+        file: repository/pipeline/tasks/build-and-push/task.yaml
+      - put: demo-app
+        params:
+          image: image/image.tar
