@@ -8,4 +8,4 @@ webhook:
   port: 9443
 leaderElection:
   leaderElect: true
-  resourceName: 3cda40f3.rynkbit.com
+  resourceName: 21ba87e4.rynkbit.com

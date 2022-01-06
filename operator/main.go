@@ -18,7 +18,6 @@ package main
 
 import (
 	"flag"
-	"github.com/meik99/cloud-computing/operator/src/controllers"
 	"os"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
@@ -33,6 +32,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	cloudcomputingv1alpha1 "github.com/meik99/cloud-computing/operator/api/v1alpha1"
+	"github.com/meik99/cloud-computing/operator/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -71,7 +71,7 @@ func main() {
 		Port:                   9443,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "3cda40f3.rynkbit.com",
+		LeaderElectionID:       "21ba87e4.rynkbit.com",
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")

@@ -1,4 +1,4 @@
 ## Append samples you want in your CSV to this file as resources ##
 resources:
-- cloud-computing_v1alpha1_demoapp.yaml
+- cloudcomputing_v1alpha1_demoapp.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples

@@ -5,15 +5,15 @@ plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: operator
-repo: github.com/meik99/cloud-computing
+repo: github.com/meik99/cloud-computing/operator
 resources:
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
   domain: rynkbit.com
-  group: cloud-computing
+  group: cloudcomputing
   kind: DemoApp
-  path: github.com/meik99/cloud-computing/api/v1alpha1
+  path: github.com/meik99/cloud-computing/operator/api/v1alpha1
   version: v1alpha1
 version: "3"
