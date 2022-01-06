@@ -11,4 +11,6 @@ RUN npm install && \
 
 
 FROM nginx:latest
-COPY --from=builder /app/dist/demo-app/ /var/www/html/
+COPY --from=builder /app/dist/demo-app/ /usr/share/nginx/html
+
+EXPOSE 80
