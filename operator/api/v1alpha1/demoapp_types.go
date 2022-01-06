@@ -29,13 +29,21 @@ type DemoAppSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of DemoApp. Edit demoapp_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// Foo string `json:"foo,omitempty"`
+
+	// Name defines the name of the Stateful Set of DemoApp
+	// Defaults to "demoapp"
+	Name string `json:"name,omitempty"`
 }
 
 // DemoAppStatus defines the observed state of DemoApp
 type DemoAppStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	ImageHash string `json:"imageHash,omitempty"`
+
+	LastImageCheck metav1.Time `json:"lastImageCheck,omitempty"`
 }
 
 //+kubebuilder:object:root=true
