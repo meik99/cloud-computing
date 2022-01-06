@@ -1,0 +1,6 @@
+apiVersion: cloud-computing.rynkbit.com/v1alpha1
+kind: DemoApp
+metadata:
+  name: demoapp-sample
+spec:
+  # Add fields here

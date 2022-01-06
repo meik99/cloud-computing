@@ -15,6 +15,9 @@ resources:
       password: ((dockerhub.token))
       tag: dev
 
+  - name: trigger
+    type: mock    
+
 jobs:
   - name: test-demo-app
     plan:
@@ -22,13 +25,17 @@ jobs:
         trigger: true
       - task: test
         file: repository/pipeline/tasks/test-demo-app/task.yaml
+      - put: trigger
+        params:
+          version: mock
 
   - name: build-and-push
     plan:
-      - get: repository
+      - get: trigger
         passed: 
           - test-demo-app
         trigger: true
+      - get: repository
       - task: build
         privileged: true
         file: repository/pipeline/tasks/build-and-push/task.yaml

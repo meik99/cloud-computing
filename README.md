@@ -9,7 +9,7 @@ See [PROPOSAL.md](PROPOSAL.md) for the proposal for this project.
 - [x] Create demo application
 - [x] Create test pipeline
 - [x] Run pipeline on repository change
-- [ ] Build demo-app Docker image
-- [ ] Create Operator project
-- [ ] Deploy demo-app
+- [x] Build demo-app Docker image
+- [x] Deploy demo-app
+- [x] Create Operator project
 - [ ] Redeploy on pipeline success
