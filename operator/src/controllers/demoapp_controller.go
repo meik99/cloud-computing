@@ -19,7 +19,7 @@ package controllers
 import (
 	"context"
 	"github.com/go-logr/logr"
-	"github.com/meik99/cloud-computing/src/demoapp"
+	"github.com/meik99/cloud-computing/operator/src/demoapp"
 	"github.com/pkg/errors"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -31,7 +31,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	cloudcomputingv1alpha1 "github.com/meik99/cloud-computing/api/v1alpha1"
+	cloudcomputingv1alpha1 "github.com/meik99/cloud-computing/operator/api/v1alpha1"
 )
 
 var logger logr.Logger

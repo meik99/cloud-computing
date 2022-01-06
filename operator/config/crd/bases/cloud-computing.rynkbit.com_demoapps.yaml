@@ -36,13 +36,19 @@ spec:
           spec:
             description: DemoAppSpec defines the desired state of DemoApp
             properties:
-              foo:
-                description: Foo is an example field of DemoApp. Edit demoapp_types.go
-                  to remove/update
+              name:
+                description: Name defines the name of the Stateful Set of DemoApp
+                  Defaults to "demoapp"
                 type: string
             type: object
           status:
             description: DemoAppStatus defines the observed state of DemoApp
+            properties:
+              imageHash:
+                type: string
+              lastImageCheck:
+                format: date-time
+                type: string
             type: object
         type: object
     served: true

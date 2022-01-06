@@ -18,7 +18,7 @@ package main
 
 import (
 	"flag"
-	"github.com/meik99/cloud-computing/src/controllers"
+	"github.com/meik99/cloud-computing/operator/src/controllers"
 	"os"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
@@ -32,7 +32,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	cloudcomputingv1alpha1 "github.com/meik99/cloud-computing/api/v1alpha1"
+	cloudcomputingv1alpha1 "github.com/meik99/cloud-computing/operator/api/v1alpha1"
 	//+kubebuilder:scaffold:imports
 )
 
