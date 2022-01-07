@@ -21,7 +21,7 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/meik99/cloud-computing/operator/src/demoapp"
 	"github.com/pkg/errors"
-	v1 "k8s.io/api/apps/v1"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -50,6 +50,8 @@ type DemoAppReconciler struct {
 func (r *DemoAppReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&cloudcomputingv1alpha1.DemoApp{}).
+		For(&appsv1.StatefulSet{}).
+		For(&corev1.Service{}).
 		Complete(r)
 }
 
@@ -104,7 +106,7 @@ func (r *DemoAppReconciler) reconcileDemoApp() error {
 func (r *DemoAppReconciler) reconcileStatefulSet() error {
 	logger.Info("reconciling stateful set")
 
-	var statefulSet v1.StatefulSet
+	var statefulSet appsv1.StatefulSet
 	err := r.Client.Get(r.ctx, client.ObjectKey{Name: r.instance.Spec.Name, Namespace: r.instance.Namespace}, &statefulSet)
 
 	if err != nil {
@@ -131,7 +133,7 @@ func (r *DemoAppReconciler) createStatefulSet() error {
 	return errors.WithStack(err)
 }
 
-func (r *DemoAppReconciler) updateStatefulSet(currentStatefulSet v1.StatefulSet) error {
+func (r *DemoAppReconciler) updateStatefulSet(currentStatefulSet appsv1.StatefulSet) error {
 	logger.Info("updating stateful set")
 	statefulSet := demoapp.NewDemoApp(r.instance.Spec.Name, r.req.Namespace).
 		CreateDesiredStatefulSet()
