@@ -29,7 +29,9 @@ type DemoAppSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of DemoApp. Edit demoapp_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	//Foo string `json:"foo,omitempty"`
+
+	Name string `json:"name,omitempty"`
 }
 
 // DemoAppStatus defines the observed state of DemoApp
