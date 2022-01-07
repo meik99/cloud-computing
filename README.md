@@ -13,3 +13,18 @@ See [PROPOSAL.md](PROPOSAL.md) for the proposal for this project.
 - [x] Deploy demo-app
 - [x] Create Operator project
 - [ ] Redeploy on pipeline success
+
+# Documentation
+
+## Deploy Operator
+
+First, deploy the operator itself.
+```shell
+kubectl apply -f https://raw.githubusercontent.com/meik99/cloud-computing/main/operator/config/deploy/deployment.yaml
+```
+
+Then, deploy a CustomResource.
+For testing purposes, you can use this sample.
+```shell
+kubectl apply -f https://raw.githubusercontent.com/meik99/cloud-computing/main/operator/config/samples/sample.yaml
+```

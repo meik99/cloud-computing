@@ -25,6 +25,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -72,6 +73,9 @@ func (r *DemoAppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 
 	var instance cloudcomputingv1alpha1.DemoApp
 	if err := r.Client.Get(ctx, req.NamespacedName, &instance); err != nil {
+		if k8serrors.IsNotFound(err) {
+			return ctrl.Result{RequeueAfter: 5 * time.Minute}, nil
+		}
 		return ctrl.Result{}, errors.WithStack(err)
 	}
 
@@ -81,7 +85,7 @@ func (r *DemoAppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{}, err
 	}
 
-	return ctrl.Result{}, nil
+	return ctrl.Result{RequeueAfter: 5 * time.Minute}, nil
 }
 
 func (r *DemoAppReconciler) reconcileDemoApp() error {
