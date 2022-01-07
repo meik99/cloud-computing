@@ -25,7 +25,7 @@ const (
 )
 
 type authToken struct {
-	token string
+	Token string `json:"token"`
 }
 
 func GetDigest() (string, error) {
@@ -35,7 +35,7 @@ func GetDigest() (string, error) {
 		return "", errors.WithStack(err)
 	}
 
-	return imageManifest.conf.digest, nil
+	return imageManifest.Conf.Digest, nil
 }
 
 func getManifest() (manifest, error) {
@@ -92,7 +92,7 @@ func getToken() (string, error) {
 		return "", errors.WithStack(err)
 	}
 
-	return result.token, nil
+	return result.Token, nil
 }
 
 func parseResponse(response *http.Response, v interface{}) error {

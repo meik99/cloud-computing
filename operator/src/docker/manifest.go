@@ -1,9 +1,9 @@
 package docker
 
 type manifest struct {
-	conf config
+	Conf config `json:"config"`
 }
 
 type config struct {
-	digest string
+	Digest string `json:"digest"`
 }
