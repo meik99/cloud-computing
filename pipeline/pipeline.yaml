@@ -28,7 +28,7 @@ jobs:
         file: repository/pipeline/tasks/test-demo-app/task.yaml
       - put: trigger
         params:
-          version: trigger/version
+          file: trigger/version
 
   - name: build-and-push
     plan:

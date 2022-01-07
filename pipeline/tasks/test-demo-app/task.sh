@@ -3,7 +3,8 @@
 # exit on error
 set -eu
 
-cd repository/demo-app
+pushd repository
+pushd demo-app
 
 echo "Installing npm dependencies"
 npm install
@@ -19,5 +20,8 @@ export CHROME_BIN="$(which chromium)"
 
 echo "Running Angular tests"
 ng test --watch=false --browsers=Headless_Chrome
+
+popd
+popd
 
 date > trigger/version
