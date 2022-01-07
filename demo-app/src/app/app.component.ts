@@ -10,4 +10,5 @@ export class AppComponent {
   title = environment.title;
   version = environment.version;
   production = environment.production;
+  testNumber = 1;
 }

@@ -24,6 +24,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"time"
 
@@ -50,8 +51,8 @@ type DemoAppReconciler struct {
 func (r *DemoAppReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&cloudcomputingv1alpha1.DemoApp{}).
-		For(&appsv1.StatefulSet{}).
-		For(&corev1.Service{}).
+		Owns(&appsv1.StatefulSet{}).
+		Owns(&corev1.Service{}).
 		Complete(r)
 }
 
@@ -138,12 +139,47 @@ func (r *DemoAppReconciler) updateStatefulSet(currentStatefulSet appsv1.Stateful
 	statefulSet := demoapp.NewDemoApp(r.instance.Spec.Name, r.req.Namespace).
 		CreateDesiredStatefulSet()
 
+	labelSelector, err := v1.LabelSelectorAsSelector(statefulSet.Spec.Selector)
+
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	var podList corev1.PodList
+	err = r.Client.List(r.ctx, &podList, &client.ListOptions{
+		LabelSelector: labelSelector,
+	})
+
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	outdatedPods, err := demoapp.GetOutdatedPods(podList)
+
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	if len(outdatedPods.Items) > 0 {
+		logger.Info("some pods are outdated", "name", statefulSet.Name, "namespace", statefulSet.Namespace)
+
+		for _, pod := range outdatedPods.Items {
+			err = r.Client.Delete(r.ctx, &pod)
+
+			if err != nil {
+				return errors.WithStack(err)
+			}
+		}
+
+		return nil
+	}
+
 	if statefulSet.Annotations[demoapp.AnnotationHash] == currentStatefulSet.Annotations[demoapp.AnnotationHash] {
 		logger.Info("stateful set already up to date")
 		return nil
 	}
 
-	err := r.Client.Update(r.ctx, &statefulSet)
+	err = r.Client.Update(r.ctx, &statefulSet)
 	return errors.WithStack(err)
 }
 
