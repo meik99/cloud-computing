@@ -12,7 +12,7 @@ See [PROPOSAL.md](PROPOSAL.md) for the proposal for this project.
 - [x] Build demo-app Docker image
 - [x] Deploy demo-app
 - [x] Create Operator project
-- [ ] Redeploy on pipeline success
+- [x] Redeploy on pipeline success
 
 # Documentation
 
