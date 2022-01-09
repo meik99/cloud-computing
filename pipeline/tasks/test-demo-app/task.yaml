@@ -8,10 +8,6 @@ image_resource:
 
 inputs:
   - name: repository
-  - name: trigger
-
-outputs:
-  - name: trigger
 
 run:
   path: repository/pipeline/tasks/test-demo-app/task.sh
