@@ -1,0 +1,47 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: operator.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: DemoApp is the Schema for the demoapps API
+      displayName: Demo App
+      kind: DemoApp
+      name: demoapps.cloudcomputing.rynkbit.com
+      version: v1alpha1
+  description: demo-app
+  displayName: demo-app
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - demo-app
+  links:
+  - name: Operator
+    url: https://operator.domain
+  maintainers:
+  - email: michaelrynkiewicz3@gmail.com"
+    name: '"Michael Rynkiewicz'
+  maturity: alpha
+  provider:
+    name: demo-app
+  version: 0.0.0
