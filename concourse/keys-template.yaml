@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: concourse-keys
+  namespace: concourse
+type: Opaque
+data:
+  authorized_worker_keys: <value>
+  session_signing_key: <value>
+  test: <value>
+  tsa_host_key: <value>
+  tsa_host_key.pub: <value>
+  worker_key: <value>
+  worker_key.pub: <value>
+
