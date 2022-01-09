@@ -23,5 +23,3 @@ ng test --watch=false --browsers=Headless_Chrome
 
 popd
 popd
-
-date > trigger/version
