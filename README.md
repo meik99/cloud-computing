@@ -16,6 +16,108 @@ See [PROPOSAL.md](PROPOSAL.md) for the proposal for this project.
 
 # Documentation
 
+## Overview
+
+What if you could just push a change into a git repository and have everything from tests to deployment in a cluster run automatically without any needed supervision? Our project shows exactly how to do that.
+
+Using an Angular demo app, called demo-app, that simply displays something and includes some tests, we use Concourse (an open source CI/CD system) to run those tests.
+If they succeed, a job uploads a new docker image of the demo app to Docker Hub. 
+Finally, an operator, watching over the demo app deployment and its service, updates it if a new version is available.
+
+All of the above (demo app, Concourse and the operator) run on a Kubernetes cluster. 
+All images are hosted on and uploaded to Docker Hub.
+
+## Demo App
+
+This is just a demo app built with Angular. 
+It displays some text and contains basic unit tests.
+
+The [demo-app-statefulset.yaml](demo-app-statefulset.yaml) configuration defines a stateful set with three pods and a service with type NodePort.
+
+We use a stateful set instead of a replica set because of the nice predictable and readable names (e.g. demo-app-0, demo-app-1 and demo-app-2).
+The service type is `NodePort`, since the cluster we use is deployed on a self-managed root server.
+Therefore, it has no cloud provided load balancer, but is made available externally using an Nginx reverse proxy.
+
+## Concourse
+
+Concourse is a CI/CD system which allows creating pipelines consisting of jobs.
+Each job runs tasks which run, e.g., scripts, in their own containers. 
+We chose Concourse because it is a common CI/CD system, uses YAML to configure its pipelines, and does what it should: running automated jobs (which includes tests, of course).
+
+### Deployment Customization
+
+The starting point for the Concourse deployment is found in [kustomization.yaml](kustomization.yaml). 
+The configuration is split into manageable parts, and therefore this file contains just the reference to the folders postgresql and concourse, which, again, contain kustomization files, declaring the files needed for the deployment.
+
+```yaml
+# kustomization.yaml
+resources:
+  - postgresql
+  - concourse
+```
+
+This pattern of splitting the configuration files is continued in those folders. The postgresql folder contains the definition of the service and stateful set for the database Concourse uses. The service gets a ClusterIP, because it is only accessed from inside the cluster. The stateful set contains one interesting part: the definition for a persistent volume.
+
+```yaml
+# postgresql/statefulset.yaml:31
+resources:
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      namespace: concourse
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 5Gi
+```
+
+The secrets template (as all other templates in this repository) contains a list of the needed secrets to run this projct.
+
+In the concourse folder, the definition for the actual Concourse deployment can be found. There are services and stateful sets for both the web page and the workers. There is one web pod and there are three worker pods. The web service gets a NodePort to enable access through the Nginx reverse proxy, the workers with their ClusterIP are only accessable from inside the cluster.
+
+One detail worth discussing is in the definition of the stateful set for the worker. 
+The workers are privileged to allow them access to the Docker process of the host system.
+They need this access to start new containers in their pod, since Concourse runs tasks in containers and would not be allowed to if not privileged.
+
+```yaml
+# concourse/statefulset-worker.yaml:36
+        securityContext:
+          privileged: true
+```
+
+### Pipeline
+
+The pipeline folder contains the definition for the pipeline and the two jobs we want to run. 
+The file [pipeline.yaml](pipeline/pipeline.yaml) contains the definition for two resources used by the jobs: our GitHub repository and the Docker image of the demo app on Docker Hub.
+The two jobs are testing the demo app, and building and pushing the docker image to Docker Hub. 
+The test is triggered on a change in the repository, and the build and push job only runs after a successful test. 
+The jobs themselves are found in their respective sub-folders.
+
+The test task is described in [test-demo-app/task.yaml](pipeline/tasks/test-demo-app/task.yaml).
+
+```yaml
+# pipeline/tasks/test-demo-app/task.yaml
+platform: linux
+image_resource: 
+  type: registry-image
+  source: 
+    repository: node
+    tag: latest
+
+
+inputs:
+  - name: repository
+
+run:
+  path: repository/pipeline/tasks/test-demo-app/task.sh
+```
+
+The task.sh installs the demo app and runs the tests.
+
+The build and push task described in [build-and-push/task.yaml](pipeline/tasks/build-and-push/task.yaml) runs a Docker image, that builds and pushes the demo app to Docker Hub.
+This image is already available and is specifically made to allow the use of Docker commands inside a Docker container.
+
 ## Operator
 
 An operator is a piece of software, designed to run inside a Kubernetes cluster.
@@ -136,3 +238,24 @@ Since the image pull policy is set to `Always`, Kubernetes checks whether a new 
 The latest image is then downloaded and applied to the new pod.
 In summary, deleting the pod triggers an automatic update of the image by the cluster.
 
+# Lessons Learned
+
+Concourse is really versatile and useful. 
+Running tests in their own containers guarantees high isolation.
+The configuration is all in files and not through some UI, which allows for more collaborative work.
+It does its own internal resource management, which allows, e.g., automatic polling for changes. 
+This means some initial investment and overhead on one hand, but increased maintainability and usability on the other.
+
+This project shows how to do everything in a cluster, even the management of said cluster. 
+It shows how cloud computing can be complex, but also versatile and rewarding.
+
+Releases of updates can be painless and almost invisible. 
+With good test coverage and the right tooling an update can be just a push to a git repository. 
+Removing the need for manual tests, builds and deployments.
+
+Operators can aid with custom tooling. 
+They offer a lot of freedom in customizing the workflows in a cluster, at the expense of time investment and needed domain knowledge.
+
+The downside is, of course, the high initial investment of time and the domain knowledge needed to set up such a system. 
+Having the system working is wonderful, but setting it up is its own little project in itself.
+This indicates the need for specific DevOps team in enterprise environments.
