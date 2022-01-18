@@ -3,3 +3,7 @@ keys
 /concourse/envvars.yaml
 /concourse/keys.yaml
 /concourse/dockerhub.yaml
+.idea/misc.xml
+.idea/vcs.xml
+.idea/workspace.xml
+concourse/discord-webhook.yaml
