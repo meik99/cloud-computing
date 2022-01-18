@@ -42,7 +42,7 @@ Therefore, it has no cloud provided load balancer, but is made available externa
 
 Concourse is a CI/CD system which allows creating pipelines consisting of jobs.
 Each job runs tasks which run, e.g., scripts, in their own containers. 
-We chose Concourse because it is a common CI/CD system, uses YAML to configure its pipelines, and does what it should: running automated jobs (which includes tests, of course).
+We chose Concourse because it is a common CI/CD system, uses YAML to configure its pipelines, and does what it should: Running automated jobs (which includes tests, of course).
 
 ### Deployment Customization
 
@@ -89,8 +89,8 @@ They need this access to start new containers in their pod, since Concourse runs
 ### Pipeline
 
 The pipeline folder contains the definition for the pipeline and the two jobs we want to run. 
-The file [pipeline.yaml](pipeline/pipeline.yaml) contains the definition for two resources used by the jobs: our GitHub repository and the Docker image of the demo app on Docker Hub.
-The two jobs are testing the demo app, and building and pushing the docker image to Docker Hub. 
+The file [pipeline.yaml](pipeline/pipeline.yaml) contains the definition for three resources used by the jobs: our GitHub repository, the Docker image of the demo app on Docker Hub and a webhook-notification.
+The two jobs are testing the demo app, and building and pushing the docker image to Docker Hub. In addition, notifications will be sent to a Discord channel on some events (e.g. test failure or docker push was successful).
 The test is triggered on a change in the repository, and the build and push job only runs after a successful test. 
 The jobs themselves are found in their respective sub-folders.
 
@@ -117,6 +117,32 @@ The task.sh installs the demo app and runs the tests.
 
 The build and push task described in [build-and-push/task.yaml](pipeline/tasks/build-and-push/task.yaml) runs a Docker image, that builds and pushes the demo app to Docker Hub.
 This image is already available and is specifically made to allow the use of Docker commands inside a Docker container.
+
+After the image has been pushed to Docker Hub successfully, a notification is sent to a Discord channel. For this purpose we added a webhook-notification resource to the pipeline configuration. Since the required resource type is not directly available in Concourse, a new resource type is declared at the beginning:
+
+```yaml
+resource_types:
+  - name: webhook-notification
+    type: registry-image
+    source:
+      repository: flavorjones/webhook-notification-resource
+      tag: latest
+```
+
+This declaration refers to an image on Docker Hub that is used for this resource type (we use this implementation: https://github.com/flavorjones/webhook-notification-resource). In the pipeline configuration, we declare then a Discord resource that references to this type. Here, the webhook from Discord is defined which has to be provided in the form of a secret. To trigger a notification on success of the "build-and-push" job, the Discord resource is used as follows:
+
+```yaml
+  - name: build-and-push
+    plan:
+# ...
+      - put: demo-app
+        params:
+          image: image/image.tar
+    on_success:
+      put: discord
+      params:
+        status: "succeeded"
+```
 
 ## Operator
 
