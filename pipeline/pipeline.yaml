@@ -1,3 +1,10 @@
+resource_types:
+  - name: webhook-notification
+    type: registry-image
+    source:
+      repository: flavorjones/webhook-notification-resource
+      tag: latest
+
 resources:
   - icon: github
     name: repository
@@ -15,6 +22,13 @@ resources:
       password: ((dockerhub.token))
       tag: dev
 
+  - name: discord
+    type: webhook-notification
+    icon: bell
+    source:
+      adapter: DiscordAdapter
+      url: ((discord.webhook))
+
 jobs:
   - name: test-demo-app
     plan:
@@ -22,6 +36,10 @@ jobs:
         trigger: true
       - task: test
         file: repository/pipeline/tasks/test-demo-app/task.yaml      
+    on_failure:
+      put: discord
+      params:
+        status: "failed"
 
   - name: build-and-push
     plan:
@@ -35,3 +53,12 @@ jobs:
       - put: demo-app
         params:
           image: image/image.tar
+    on_success:
+      put: discord
+      params:
+        status: "succeeded"
+    on_failure:
+      put: discord
+      params:
+        status: "failed"
+        
