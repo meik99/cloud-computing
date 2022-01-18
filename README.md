@@ -56,7 +56,7 @@ resources:
   - concourse
 ```
 
-This pattern of splitting the configuration files is continued in those folders. The postgresql folder contains the definition of the service and stateful set for the database Concourse uses. The service gets a ClusterIP, because it is only accessed from inside the cluster. The stateful set contains one interesting part: the definition for a persistent volume.
+This pattern of splitting the configuration files is continued in those folders. The postgresql folder contains the definition of the service and stateful set for the database Concourse uses. The service gets a ClusterIP, because it is only accessed from inside the cluster. The stateful set contains one interesting part: The definition for a persistent volume.
 
 ```yaml
 # postgresql/statefulset.yaml:31
@@ -143,6 +143,11 @@ This declaration refers to an image on Docker Hub that is used for this resource
       params:
         status: "succeeded"
 ```
+
+
+This results then in automatic Discord notifications when an image has been pushed successfully to Docker Hub:
+
+![grafik](https://user-images.githubusercontent.com/53394659/150024697-999d9b0a-d955-4eec-91e1-8f4c1abd8dbc.png)
 
 ## Operator
 
