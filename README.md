@@ -21,7 +21,7 @@ See [PROPOSAL.md](PROPOSAL.md) for the proposal for this project.
 What if you could just push a change into a git repository and have everything from tests to deployment in a cluster run automatically without any needed supervision? Our project shows exactly how to do that.
 
 Using an Angular demo app, called demo-app, that simply displays something and includes some tests, we use Concourse (an open source CI/CD system) to run those tests.
-If they succeed, a job uploads a new docker image of the demo app to Docker Hub. 
+If they succeed, a job uploads a new docker image of the demo app to Docker Hub. In addition, a Discord notification informs us about certain events (e.g. test failure).
 Finally, an operator, watching over the demo app deployment and its service, updates it if a new version is available.
 
 All of the above (demo app, Concourse and the operator) run on a Kubernetes cluster. 
